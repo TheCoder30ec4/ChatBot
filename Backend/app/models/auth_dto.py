@@ -1,12 +1,13 @@
 from uuid import UUID
 from pydantic import BaseModel,EmailStr
 
-
 class RegisterUserRequest(BaseModel):
-    email: EmailStr
-    first_name: str 
-    last_name: str 
-    password_hashed: str 
+    first_name:       str
+    last_name:        str
+    email:            EmailStr
+    password_hashed:  str
+
+
     
     
 class Token(BaseModel):

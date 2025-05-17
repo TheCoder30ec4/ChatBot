@@ -1,8 +1,7 @@
 from fastapi import FastAPI
+from app.api import register_routers
 
 
 app = FastAPI() 
 
-@app.get("/")
-def helloWorld():
-    return {"Message":"Hello world"}
+register_routers(app)

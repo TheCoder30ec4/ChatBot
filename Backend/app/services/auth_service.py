@@ -6,15 +6,18 @@ from passlib.context import CryptContext
 import jwt
 from jwt import PyJWTError
 from sqlalchemy.orm import Session
-from Backend.app.entites.users import User
-from Backend.app.models import auth_dto
+from app.entites.users import User
+from app.models import auth_dto
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import logging
+from dotenv import load_dotenv
+import os
 
+load_dotenv("Backend/.env")
 
 SECRECT_KEY = "SECRECT_KEY"
-ALGORITHM = "ALGORITHM"
-ACCESS_TOKEN_EXPIRE_MINUTES = "TIME"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 bcrypt_context = CryptContext(schemes=['bcrypt'],deprecated='auto')
@@ -53,20 +56,19 @@ def verfiy_token(token:str)-> auth_dto.TokenData:
         raise e 
     
 
-def register_user(db:Session, register_user_request:auth_dto.RegisterUserRequest)-> None:
+def register_user(db: Session, register_user_request: auth_dto.RegisterUserRequest) -> None:
     try:
-        create_user_model = User(
-            id=uuid4(),
-            email= register_user_request.email,
-            firs_name= register_user_request.first_name,
-            last_name = register_user_request.last_name,
-            password_hash = get_password_hash(register_user_request.password)
+        user = User(
+            id=uuid4(),                                  # optional if you have default
+            email=register_user_request.email,
+            first_name=register_user_request.first_name, # <-- corrected
+            last_name=register_user_request.last_name,
+            password_hashed=get_password_hash(register_user_request.password_hashed),  # <-- corrected
         )
-        
-        db.add(create_user_model)
-        db.commit() 
+        db.add(user)
+        db.commit()
     except Exception as e:
-        logging.error(f"Failed to register user: {register_user_request.email}. Error:{str(e)}")
+        logging.error(f"Failed to register user: {register_user_request.email}. Error: {e}")
         raise
     
 
