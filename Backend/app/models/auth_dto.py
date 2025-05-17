@@ -6,8 +6,6 @@ class RegisterUserRequest(BaseModel):
     last_name:        str
     email:            EmailStr
     password_hashed:  str
-
-
     
     
 class Token(BaseModel):
