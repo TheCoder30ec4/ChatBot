@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: posgresDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  backend:
+    build:
+      context: .              # <-- now points to ./Backend
+      dockerfile: Dockerfile # <-- also in ./Backend
+    depends_on:
+      - db
+    env_file:
+      - .env.local            # <-- create Backend/.env.local
+    volumes:
+      - .:/app                # <-- mount the entire Backend folder to /app
+    ports:
+      - "8080:8080"
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8080
+      --reload
+
+volumes:
+  postgres_data:

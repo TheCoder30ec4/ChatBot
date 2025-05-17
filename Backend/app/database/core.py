@@ -8,7 +8,7 @@ load_dotenv("Backend/.env")
 
 
 # Get the Database url from the env
-DATABASE_URL="postgresql://admin:admin@localhost:5432/posgresDB"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/posgresDB"
 
 # Pass the Database url and create an instance with the database
 engine = create_engine(DATABASE_URL)
