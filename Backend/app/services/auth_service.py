@@ -31,10 +31,10 @@ def get_password_hash(password:str)->str:
 
 def authenticate_user(email:str, password:str, db:Session)-> User | bool:
     user = db.query(User).filter(User.email == email).first()
-    if not user or not verify_password(password,user.password_hash):
+    if not user or not verify_password(password,user.password_hashed):
         logging.warning(f"Failed authentication attempt for email:{email}")
         return False
-    return User
+    return user
 
 
 def create_access_token(email:str, user_id:UUID,expires_delta: timedelta)-> str:
@@ -73,16 +73,15 @@ def register_user(db: Session, register_user_request: auth_dto.RegisterUserReque
     
 
 def get_current_user(token:Annotated[str, Depends(oauth2_bearer)])-> auth_dto.TokenData:
-    return verify_password(token)
+    return verfiy_token(token)
 
 CurrentUser = Annotated[auth_dto.TokenData, Depends(get_current_user)]
 
 def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,Depends()], db:Session)->auth_dto.Token:
     
-    user = authenticate_user(form_data.email, form_data.password,db)
+    user = authenticate_user(form_data.username, form_data.password,db)
     
     if not user:
-        
         # TODO: Replace the string with AuthenticationError
         raise "Failed to get the login access"
     token = create_access_token(user.email,user.id, timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
