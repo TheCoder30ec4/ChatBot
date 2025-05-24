@@ -3,6 +3,7 @@ from app.controllers.auth_controller import router as auth_router
 from app.controllers.user_controller import router as user_router
 from app.controllers.llm_call_controller import router as llm_router
 from app.controllers.prompt_controller import router as prompt_router
+from app.controllers.chat_controller import router as chat_router
 
 
 def register_routers(app:FastAPI):
@@ -10,3 +11,4 @@ def register_routers(app:FastAPI):
     app.include_router(user_router)
     app.include_router(llm_router)
     app.include_router(prompt_router)
+    app.include_router(chat_router)
