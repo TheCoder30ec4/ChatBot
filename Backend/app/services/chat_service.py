@@ -1,7 +1,9 @@
+from typing import AsyncGenerator
 from sqlalchemy.orm import Session
 from app.entites.chat import Chat
 from app.workflows.ChatBot.chains.Chat_llm import  chat_llm,create_sessionId, get_llm,get_prompt #type: ignore
 import uuid
+from fastapi.responses import StreamingResponse
 
 
 # on click on new chat get new session id and commit it into the db 
@@ -22,7 +24,10 @@ def get_sessionId(db:Session,user_id: uuid.UUID):
     return {"Session_Id": new_chat.session_id   }
 
 
-def llm_chat(db:Session,session_id:str, question:str)-> str: #type: ignore
+def llm_chat(db: Session, session_id: str, question: str) -> AsyncGenerator[str, None]:
     prompt_template = get_prompt()
-    llm = get_llm(model="mistral-saba-24b",api_key="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")
-    return chat_llm(session_id=session_id,question=question,prompt_template=prompt_template,llm=llm)# type: ignore
+    llm = get_llm(
+        model="mistral-saba-24b",
+        api_key=""
+    )
+    return chat_llm(session_id=session_id, question=question, prompt_template=prompt_template, llm=llm)
