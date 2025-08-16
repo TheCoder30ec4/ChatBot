@@ -20,7 +20,7 @@ def get_prompts(db:Session)->List[PromptWrapper]:
         for prompt in prompts
     ]
     
-def get_prompt(db:Session,prompt_name)->PromptResponse | str:
+def get_prompt(db:Session,prompt_name:str)->PromptResponse | str:
     try:
         
         prompt = db.query(Prompts).filter(Prompts.prompt_name == prompt_name).first()
